@@ -491,6 +491,7 @@ initState();
 renderProductList();
 renderSummary();
 renderShipping();
+initBottomSheetWheel();
 
 var __draft = getDraft();
 
@@ -595,8 +596,102 @@ function openBottomSheet() {
   }
 
   overlay.style.display = 'flex';
+  renderBottomSheetList([
+  'Item 1',
+  'Item 2',
+  'Item 3',
+  'Item 4',
+  'Item 5'
+]);
+}
+function renderBottomSheetList(items) {
+
+  var body = document.getElementById('ship-sheet-body');
+
+  if (!body) {
+    return;
+  }
+
+  var html = '<div class="ship-sheet-list">';
+
+  items.forEach(function(item) {
+
+    html += '<div class="ship-sheet-item">' + item + '</div>';
+
+  });
+
+  html += '</div>';
+
+  body.innerHTML = html;
+updateWheelSelection(body);
+}
+var bottomSheetWheelInitialized = false;
+
+function initBottomSheetWheel() {
+
+  if (bottomSheetWheelInitialized) {
+    return;
+  }
+
+  var body = document.getElementById('ship-sheet-body');
+
+  if (!body) {
+    return;
+  }
+
+  body.addEventListener('scroll', function () {
+    updateWheelSelection(body);
+  });
+
+  bottomSheetWheelInitialized = true;
+
 }
 
+function updateWheelSelection(body) {
+
+  var containerRect = body.getBoundingClientRect();
+
+  var containerCenter =
+      containerRect.top + containerRect.height / 2;
+
+  var wheelItems =
+      body.querySelectorAll('.ship-sheet-item');
+
+  var closestItem = null;
+
+  var closestDistance = Infinity;
+
+  wheelItems.forEach(function(item){
+
+      item.classList.remove('ship-sheet-item-selected');
+
+      var rect = item.getBoundingClientRect();
+
+      var center =
+          rect.top + rect.height / 2;
+
+      var distance =
+          Math.abs(center - containerCenter);
+
+      if(distance < closestDistance){
+
+          closestDistance = distance;
+
+          closestItem = item;
+
+      }
+
+  });
+
+  if(closestItem){
+
+      closestItem.classList.add(
+          'ship-sheet-item-selected'
+      );
+
+  }
+
+}
 function closeBottomSheet() {
   var overlay = document.getElementById('ship-sheet-overlay');
 
@@ -775,9 +870,9 @@ function handleOverlayClick(event) {
   </div>
 </div>
 
-<div class="ship-sheet-body">
-
-  <!-- Commit 13.5B-3 -->
+<div
+  id="ship-sheet-body"
+  class="ship-sheet-body">
 
 </div>
 
