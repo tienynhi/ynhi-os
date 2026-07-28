@@ -587,12 +587,31 @@ if (timeEl && draft.delivery.time) {
   timeEl.textContent = draft.delivery.time;
 }
 }
+function openBottomSheet() {
+  var overlay = document.getElementById('ship-sheet-overlay');
+
+  if (!overlay) {
+    return;
+  }
+
+  overlay.style.display = 'flex';
+}
+
+function closeBottomSheet() {
+  var overlay = document.getElementById('ship-sheet-overlay');
+
+  if (!overlay) {
+    return;
+  }
+
+  overlay.style.display = 'none';
+}
 function openShipDatePicker() {
-  // TODO: Commit 13.5B
+  openBottomSheet();
 }
 
 function openShipTimePicker() {
-  // TODO: Commit 13.5B
+  openBottomSheet();
 }
 var addButtons = document.querySelectorAll('.btn-dropdown-add');
 
@@ -739,9 +758,12 @@ function handleOverlayClick(event) {
 
 <div
   id="ship-sheet-overlay"
-  class="ship-sheet-overlay">
+  class="ship-sheet-overlay"
+  onclick="closeBottomSheet()">
 
-  <div class="ship-sheet">
+  <div
+  class="ship-sheet"
+  onclick="event.stopPropagation()">
 
     <div class="ship-sheet-handle"></div>
 
