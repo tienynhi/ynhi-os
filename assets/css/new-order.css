@@ -740,11 +740,18 @@ textarea.form-control.input-lg {
 }
 
 .ship-sheet-body {
-  flex: 1;
+    flex: 1;
 
-  padding: 16px;
+    overflow-y: auto;
+    overflow-x: hidden;
 
-  overflow: hidden;
+    padding: 0;
+
+    scroll-snap-type: y mandatory;
+
+    -webkit-overflow-scrolling: touch;
+
+    position: relative;
 }
 .ship-sheet-header {
     padding: 16px 20px;
@@ -781,18 +788,98 @@ textarea.form-control.input-lg {
     cursor: pointer;
 }
 .ship-sheet-list {
-    display: flex;
-    flex-direction: column;
+    display:flex;
+    flex-direction:column;
 }
 
 .ship-sheet-item {
-    min-height: 48px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 
-    border-bottom: 1px solid #f3f4f6;
+    height:48px;
 
-    font-size: 16px;
-    color: #111827;
+    flex-shrink:0;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-size:16px;
+
+    color:#6b7280;
+
+    scroll-snap-align:center;
+
+    user-select:none;
+
 }
+.ship-sheet-item-selected{
+
+    font-size:18px;
+
+    font-weight:700;
+
+    color:#111827;
+
+}
+.ship-sheet-body::-webkit-scrollbar{
+
+    display:none;
+
+}
+.ship-sheet-body{
+
+    scrollbar-width:none;
+
+}
+/* START Wheel Picker */
+.ship-sheet-wheel-wrap {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+}
+
+.ship-sheet-body {
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 0;
+    scroll-snap-type: y mandatory;
+    -webkit-overflow-scrolling: touch;
+    position: relative;
+}
+
+.ship-sheet-selection-indicator {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 48px;
+    transform: translateY(-50%);
+    border-top: 1px solid #e5e7eb;
+    border-bottom: 1px solid #e5e7eb;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.ship-sheet-body::before,
+.ship-sheet-body::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 56px;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.ship-sheet-body::before {
+    top: 0;
+    background: linear-gradient(to bottom, #ffffff, rgba(255, 255, 255, 0));
+}
+
+.ship-sheet-body::after {
+    bottom: 0;
+    background: linear-gradient(to top, #ffffff, rgba(255, 255, 255, 0));
+}
+/* END Wheel Picker */

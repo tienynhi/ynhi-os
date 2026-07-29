@@ -491,7 +491,7 @@ initState();
 renderProductList();
 renderSummary();
 renderShipping();
-initBottomSheetWheel();
+bindWheelEvents();
 
 var __draft = getDraft();
 
@@ -588,6 +588,7 @@ if (timeEl && draft.delivery.time) {
   timeEl.textContent = draft.delivery.time;
 }
 }
+// START Wheel Picker
 function openBottomSheet() {
   var overlay = document.getElementById('ship-sheet-overlay');
 
@@ -596,102 +597,127 @@ function openBottomSheet() {
   }
 
   overlay.style.display = 'flex';
-  renderBottomSheetList([
-  'Item 1',
-  'Item 2',
-  'Item 3',
-  'Item 4',
-  'Item 5'
-]);
+
+  bindWheelEvents();
+
+  renderWheel([
+    'Item 1',
+    'Item 2',
+    'Item 3',
+    'Item 4',
+    'Item 5'
+  ], 0);
 }
-function renderBottomSheetList(items) {
+var wheelItemHeight = 48;
+var wheelItems = [];
+var wheelSelectedIndex = 0;
+var wheelEventsBound = false;
 
+function measureWheel(body) {
+  return {
+    containerHeight: body.clientHeight,
+    itemHeight: wheelItemHeight
+  };
+}
+
+function setWheelPadding(body) {
+  var list = body.querySelector('.ship-sheet-list');
+  if (!list) {
+    return;
+  }
+  var measurements = measureWheel(body);
+  var padding = (measurements.containerHeight - measurements.itemHeight) / 2;
+  list.style.paddingTop = padding + 'px';
+  list.style.paddingBottom = padding + 'px';
+}
+
+function renderWheel(items, selectedIndex) {
   var body = document.getElementById('ship-sheet-body');
-
   if (!body) {
     return;
   }
 
+  wheelItems = items;
+  wheelSelectedIndex = selectedIndex || 0;
+
   var html = '<div class="ship-sheet-list">';
-
-  items.forEach(function(item) {
-
+  items.forEach(function (item) {
     html += '<div class="ship-sheet-item">' + item + '</div>';
-
   });
-
   html += '</div>';
 
   body.innerHTML = html;
-updateWheelSelection(body);
+
+  setWheelPadding(body);
+  scrollToIndex(wheelSelectedIndex);
+  updateSelected();
 }
-var bottomSheetWheelInitialized = false;
 
-function initBottomSheetWheel() {
-
-  if (bottomSheetWheelInitialized) {
+function scrollToIndex(index) {
+  var body = document.getElementById('ship-sheet-body');
+  if (!body) {
     return;
   }
+  body.scrollTop = index * wheelItemHeight;
+}
 
+function bindWheelEvents() {
+  if (wheelEventsBound) {
+    return;
+  }
   var body = document.getElementById('ship-sheet-body');
+  if (!body) {
+    return;
+  }
+  body.addEventListener('scroll', function () {
+    updateSelected();
+  });
+  wheelEventsBound = true;
+}
 
+function updateSelected() {
+  var body = document.getElementById('ship-sheet-body');
   if (!body) {
     return;
   }
 
-  body.addEventListener('scroll', function () {
-    updateWheelSelection(body);
-  });
-
-  bottomSheetWheelInitialized = true;
-
-}
-
-function updateWheelSelection(body) {
-
   var containerRect = body.getBoundingClientRect();
+  var containerCenter = containerRect.top + containerRect.height / 2;
 
-  var containerCenter =
-      containerRect.top + containerRect.height / 2;
-
-  var wheelItems =
-      body.querySelectorAll('.ship-sheet-item');
-
+  var items = body.querySelectorAll('.ship-sheet-item');
   var closestItem = null;
-
+  var closestIndex = 0;
   var closestDistance = Infinity;
 
-  wheelItems.forEach(function(item){
+  items.forEach(function (item, index) {
+    item.classList.remove('ship-sheet-item-selected');
 
-      item.classList.remove('ship-sheet-item-selected');
+    var rect = item.getBoundingClientRect();
+    var center = rect.top + rect.height / 2;
+    var distance = Math.abs(center - containerCenter);
 
-      var rect = item.getBoundingClientRect();
-
-      var center =
-          rect.top + rect.height / 2;
-
-      var distance =
-          Math.abs(center - containerCenter);
-
-      if(distance < closestDistance){
-
-          closestDistance = distance;
-
-          closestItem = item;
-
-      }
-
+    if (distance < closestDistance) {
+      closestDistance = distance;
+      closestItem = item;
+      closestIndex = index;
+    }
   });
 
-  if(closestItem){
-
-      closestItem.classList.add(
-          'ship-sheet-item-selected'
-      );
-
+  if (closestItem) {
+    closestItem.classList.add('ship-sheet-item-selected');
   }
 
+  wheelSelectedIndex = closestIndex;
 }
+
+function getSelectedIndex() {
+  return wheelSelectedIndex;
+}
+
+function getSelectedValue() {
+  return wheelItems[wheelSelectedIndex];
+}
+// END Wheel Picker
 function closeBottomSheet() {
   var overlay = document.getElementById('ship-sheet-overlay');
 
@@ -870,11 +896,16 @@ function handleOverlayClick(event) {
   </div>
 </div>
 
-<div
-  id="ship-sheet-body"
-  class="ship-sheet-body">
+<!-- START Wheel Picker -->
+<div class="ship-sheet-wheel-wrap">
+  <div
+    id="ship-sheet-body"
+    class="ship-sheet-body">
+  </div>
 
+  <div class="ship-sheet-selection-indicator"></div>
 </div>
+<!-- END Wheel Picker -->
 
 <div class="ship-sheet-footer">
 
