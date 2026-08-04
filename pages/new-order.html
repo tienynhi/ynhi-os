@@ -599,14 +599,6 @@ function openBottomSheet() {
   overlay.style.display = 'flex';
 
   bindWheelEvents();
-
-  renderWheel([
-    'Item 1',
-    'Item 2',
-    'Item 3',
-    'Item 4',
-    'Item 5'
-  ], 0);
 }
 var wheelItemHeight = 48;
 var wheelItems = [];
@@ -727,12 +719,80 @@ function closeBottomSheet() {
 
   overlay.style.display = 'none';
 }
+var shipPickerTarget = null;
+
+function generateDateItems() {
+  var items = ['Hôm nay'];
+  var weekdays = ['CN', 'Th2', 'Th3', 'Th4', 'Th5', 'Th6', 'Th7'];
+  var now = new Date();
+
+  for (var i = 1; i <= 13; i++) {
+    var d = new Date(now.getFullYear(), now.getMonth(), now.getDate() + i);
+    items.push(weekdays[d.getDay()] + ' ' + d.getDate() + ' thg ' + (d.getMonth() + 1));
+  }
+
+  return items;
+}
+
+function generateTimeItems() {
+  var items = ['Giao ngay'];
+
+  for (var h = 8; h <= 21; h++) {
+    for (var m = 0; m < 60; m += 5) {
+      if (h === 21 && m > 0) {
+        break;
+      }
+      var hh = h < 10 ? '0' + h : '' + h;
+      var mm = m < 10 ? '0' + m : '' + m;
+      items.push(hh + ':' + mm);
+    }
+  }
+
+  return items;
+}
+
 function openShipDatePicker() {
+  shipPickerTarget = 'date';
+
+  var items = generateDateItems();
+  var draft = getDraft();
+  var currentValue = draft && draft.delivery ? draft.delivery.date : null;
+  var selectedIndex = currentValue ? items.indexOf(currentValue) : 0;
+
+  if (selectedIndex < 0) {
+    selectedIndex = 0;
+  }
+
   openBottomSheet();
+  renderWheel(items, selectedIndex);
 }
 
 function openShipTimePicker() {
+  shipPickerTarget = 'time';
+
+  var items = generateTimeItems();
+  var draft = getDraft();
+  var currentValue = draft && draft.delivery ? draft.delivery.time : null;
+  var selectedIndex = currentValue ? items.indexOf(currentValue) : 0;
+
+  if (selectedIndex < 0) {
+    selectedIndex = 0;
+  }
+
   openBottomSheet();
+  renderWheel(items, selectedIndex);
+}
+
+function confirmShipPicker() {
+  var value = getSelectedValue();
+
+  if (shipPickerTarget === 'date') {
+    updateDraft('delivery.date', value);
+  } else if (shipPickerTarget === 'time') {
+    updateDraft('delivery.time', value);
+  }
+
+  closeBottomSheet();
 }
 var addButtons = document.querySelectorAll('.btn-dropdown-add');
 
@@ -912,7 +972,7 @@ function handleOverlayClick(event) {
   <button
   type="button"
   class="ship-sheet-confirm"
-  onclick="closeBottomSheet()">
+  onclick="confirmShipPicker()">
 
   Xong
 
