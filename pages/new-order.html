@@ -578,14 +578,14 @@ function renderShipping() {
   }
   var dateEl = document.getElementById('input-delivery-date');
 
-if (dateEl && draft.delivery.date) {
-  dateEl.textContent = draft.delivery.date;
+if (dateEl) {
+  dateEl.textContent = draft.delivery.date ? draft.delivery.date : 'Hôm nay';
 }
 
 var timeEl = document.getElementById('input-delivery-time');
 
-if (timeEl && draft.delivery.time) {
-  timeEl.textContent = draft.delivery.time;
+if (timeEl) {
+  timeEl.textContent = draft.delivery.time ? draft.delivery.time : 'Giao ngay';
 }
 }
 // START Wheel Picker
@@ -791,6 +791,8 @@ function confirmShipPicker() {
   } else if (shipPickerTarget === 'time') {
     updateDraft('delivery.time', value);
   }
+
+  renderShipping();
 
   closeBottomSheet();
 }
