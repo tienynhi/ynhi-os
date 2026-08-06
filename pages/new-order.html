@@ -380,17 +380,29 @@ aria-label="Thêm khăn giấy">
       </div>
 
       <div class="payment-options payment-options-2col">
-  <label class="payment-option-lg is-selected">
-    <input type="radio" name="payment-method" checked>
-    <span class="payment-lg-icon">🟢</span>
-    <span class="payment-lg-label">Chuyển khoản trước 100%</span>
-  </label>
-
   <label class="payment-option-lg">
-    <input type="radio" name="payment-method">
-    <span class="payment-lg-icon">⚪</span>
-    <span class="payment-lg-label">Thanh toán khi nhận bánh</span>
-  </label>
+  <input
+    type="radio"
+    name="payment-method"
+    value="full-transfer"
+    onchange="updateDraft('payment.method', this.value); renderPayment();">
+  <div class="payment-radio"></div>
+  <span class="payment-lg-label">
+    Chuyển khoản trước 100%
+  </span>
+</label>
+
+<label class="payment-option-lg">
+  <input
+    type="radio"
+    name="payment-method"
+    value="pay-on-delivery"
+    onchange="updateDraft('payment.method', this.value); renderPayment();">
+  <div class="payment-radio"></div>
+  <span class="payment-lg-label">
+    Thanh toán khi nhận bánh
+  </span>
+</label>
 </div>
     </section>
 
@@ -501,6 +513,7 @@ initState();
 renderProductList();
 renderSummary();
 renderShipping();
+renderPayment();
 bindWheelEvents();
 
 var __draft = getDraft();
@@ -612,6 +625,31 @@ var timeEl = document.getElementById('input-delivery-time');
 if (timeEl) {
   timeEl.textContent = draft.delivery.time ? draft.delivery.time : 'Giao ngay';
 }
+}
+
+function renderPayment() {
+  var draft = getDraft();
+
+  if (!draft || !draft.payment) {
+    return;
+  }
+
+  var selectedMethod = draft.payment.method;
+  var radios = document.querySelectorAll('input[name="payment-method"]');
+
+  radios.forEach(function (radio) {
+    var isSelected = radio.value === selectedMethod;
+    radio.checked = isSelected;
+
+    var option = radio.closest('.payment-option-lg');
+    if (option) {
+      if (isSelected) {
+        option.classList.add('is-selected');
+      } else {
+        option.classList.remove('is-selected');
+      }
+    }
+  });
 }
 // START Wheel Picker
 function openBottomSheet() {

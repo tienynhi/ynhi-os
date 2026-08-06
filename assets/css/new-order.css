@@ -441,10 +441,30 @@ textarea.form-control.input-lg {
   height: 0;
 }
 
-.payment-lg-icon {
-  font-size: 15px;
-  line-height: 1;
+.payment-radio {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1.5px solid var(--y-green);
+  background: var(--y-card-bg);
   flex-shrink: 0;
+  position: relative;
+}
+
+.payment-option-lg.is-selected .payment-radio {
+  border-color: #ffffff;
+}
+
+.payment-option-lg.is-selected .payment-radio::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ffffff;
+  transform: translate(-50%, -50%);
 }
 
 .payment-lg-label {
