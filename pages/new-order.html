@@ -431,7 +431,11 @@ aria-label="Thêm khăn giấy">
 </div>
       <div class="summary-row">
         <span class="summary-label">Phí ship</span>
-        <span class="summary-value">25.000đ</span>
+        <span
+class="summary-value"
+id="summary-shipfee-value">
+25.000đ
+</span>
       </div>
       <div class="summary-row">
         <span class="summary-label">Giảm giá</span>
@@ -442,7 +446,11 @@ aria-label="Thêm khăn giấy">
 
       <div class="summary-row summary-row-total">
         <span class="summary-label">Tổng cộng</span>
-        <span class="summary-value">455.000đ</span>
+        <span
+class="summary-value"
+id="summary-total-value">
+455.000đ
+</span>
       </div>
       <div class="summary-row">
         <span class="summary-label">Đã cọc</span>
@@ -555,6 +563,21 @@ function renderSummary() {
   var subtotalEl = document.getElementById('summary-subtotal-value');
   if (subtotalEl) {
     subtotalEl.textContent = subtotal.toLocaleString('vi-VN') + 'đ';
+  }
+
+  var draft = getDraft();
+  var shipFee = (draft && draft.delivery && Number(draft.delivery.shipFee)) || 0;
+
+  var shipFeeEl = document.getElementById('summary-shipfee-value');
+  if (shipFeeEl) {
+    shipFeeEl.textContent = shipFee.toLocaleString('vi-VN') + 'đ';
+  }
+
+  var total = subtotal + shipFee;
+
+  var totalEl = document.getElementById('summary-total-value');
+  if (totalEl) {
+    totalEl.textContent = total.toLocaleString('vi-VN') + 'đ';
   }
 }
 function renderShipping() {
