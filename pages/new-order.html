@@ -426,13 +426,14 @@ aria-label="Thêm khăn giấy">
 
       <div class="form-field">
         <label class="form-label">Khách dặn</label>
-        <textarea class="form-control input-lg" rows="2" placeholder="Ví dụ: giao trước 5h chiều, gọi trước khi giao...">Viết chữ "Chúc mừng sinh nhật Bo" trên bánh</textarea>
+        <textarea id="input-notes-customer" class="form-control input-lg" rows="2" placeholder="Ví dụ: giao trước 5h chiều, gọi trước khi giao..." oninput="updateDraft('notes.customerNote', this.value)"></textarea>
       </div>
 
       <div class="form-field">
         <label class="form-label">Ghi chú nội bộ</label>
-        <textarea class="form-control input-lg" rows="2" placeholder="Yêu cầu riêng cho bộ phận bếp...">Không dùng hạt, khách bị dị ứng</textarea>
+        <textarea id="input-notes-kitchen" class="form-control input-lg" rows="2" placeholder="Yêu cầu riêng cho bộ phận bếp..." oninput="updateDraft('notes.kitchenNote', this.value)"></textarea>
       </div>
+    </section>
 
     <!-- ===================================================== -->
     <!-- BLOCK 07 - TỔNG KẾT -->
@@ -514,6 +515,7 @@ renderProductList();
 renderSummary();
 renderShipping();
 renderPayment();
+renderNotes();
 bindWheelEvents();
 
 var __draft = getDraft();
@@ -650,6 +652,26 @@ function renderPayment() {
       }
     }
   });
+}
+
+function renderNotes() {
+  var draft = getDraft();
+
+  if (!draft || !draft.notes) {
+    return;
+  }
+
+  var customerNoteEl = document.getElementById('input-notes-customer');
+
+  if (customerNoteEl) {
+    customerNoteEl.value = draft.notes.customerNote || '';
+  }
+
+  var kitchenNoteEl = document.getElementById('input-notes-kitchen');
+
+  if (kitchenNoteEl) {
+    kitchenNoteEl.value = draft.notes.kitchenNote || '';
+  }
 }
 // START Wheel Picker
 function openBottomSheet() {
