@@ -98,7 +98,7 @@ onclick="openDraftPopup()">
           <select
     id="input-customer-type"
     class="form-select input-lg"
-    onchange="updateDraft('customer.type', this.value)">
+    onchange="updateDraft('customer.customerType', this.value)">
             <option>Khách mới</option>
             <option selected>Khách quen</option>
             <option>Khách VIP</option>
@@ -536,9 +536,9 @@ if (__draft && __draft.customer) {
     document.getElementById("input-customer-address").value =
       __draft.customer.address;
   }
-if (__draft.customer.type) {
+if (__draft.customer.customerType) {
     document.getElementById('input-customer-type').value =
-        __draft.customer.type;
+        __draft.customer.customerType;
 }
 if (__draft.customer.source) {
   document.getElementById('input-customer-source').value =
