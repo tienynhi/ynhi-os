@@ -96,17 +96,25 @@ onclick="openDraftPopup()">
         <div class="form-field">
           <label class="form-label">Loại khách</label>
           <select
-    id="input-customer-type"
-    class="form-select input-lg"
-    onchange="updateDraft('customer.customerType', this.value)">
-            <option>Khách mới</option>
-            <option selected>Khách quen</option>
-            <option>Khách VIP</option>
-          </select>
+  id="input-customer-type"
+  class="form-select input-lg select-placeholder"
+  required
+  onchange="updateDraft('customer.customerType', this.value)">
+  <option value="" disabled selected hidden>Chưa chọn</option>
+  <option>Khách mới</option>
+  <option>Khách quen</option>
+  <option>Khách VIP</option>
+</select>
+          
         </div>
         <div class="form-field">
   <label class="form-label">Nguồn khách</label>
-  <select id="input-customer-source" class="form-select input-lg" onchange="updateDraft('customer.source', this.value)">
+  <select
+  id="input-customer-source"
+  class="form-select input-lg select-placeholder"
+  required
+  onchange="updateDraft('customer.source', this.value)">
+  <option value="" disabled selected hidden>Chưa chọn</option>
     <option>Facebook</option>
     <option>TikTok</option>
     <option>Zalo</option>
